@@ -27,6 +27,9 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Subtask> subtaskMap = new HashMap<>();
     private final Map<Integer, Epic> epicMap = new HashMap<>();
 
+    private final HistoryManager historyManager = new InMemoryHistoryManager();
+
+    @Override
     public Integer generateId() {
         return idCounter.addAndGet(1);
     }
@@ -37,8 +40,10 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task getTaskById(Integer id) {
-        return taskMap.get(id);
+    public Task getTask(Integer id) {
+        var task = taskMap.get(id);
+        historyManager.add(task);
+        return task;
     }
 
     @Override
@@ -67,8 +72,10 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Subtask getSubtaskById(Integer id) {
-        return subtaskMap.get(id);
+    public Subtask getSubtask(Integer id) {
+        var subtask = subtaskMap.get(id);
+        historyManager.add(subtask);
+        return subtask;
     }
 
     @Override
@@ -89,8 +96,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeSubtaskById(Integer id) {
-        var removedSubtask = getSubtaskById(id);
-        var epic = getEpicById(removedSubtask.getEpicId());
+        var removedSubtask = subtaskMap.get(id);
+        var epic = epicMap.get(removedSubtask.getEpicId());
         epic.removeSubtaskId(id);
         updateEpicOfSubtaskChanges(epic);
         subtaskMap.remove(id);
@@ -101,7 +108,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (subtask.getEpicId() == null) {
             System.out.println("\nПри создании подзадачи не был указан эпик: " + subtask);
         } else {
-            var epic = getEpicById(subtask.getEpicId());
+            var epic = epicMap.get(subtask.getEpicId());
             if (epic == null) {
                 System.out.println("\nПри создании подзадачи был указан несуществющий эпик: " + subtask);
             } else {
@@ -118,7 +125,7 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("\nОбновляется несуществющая задача: " + subtask);
         } else {
             subtaskMap.replace(subtask.getId(), subtask);
-            var epic = getEpicById(subtask.getEpicId());
+            var epic = epicMap.get(subtask.getEpicId());
             updateEpicOfSubtaskChanges(epic);
         }
     }
@@ -129,8 +136,10 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Epic getEpicById(Integer id) {
-        return epicMap.get(id);
+    public Epic getEpic(Integer id) {
+        var epic = epicMap.get(id);
+        historyManager.add(epic);
+        return epic;
     }
 
     @Override
@@ -144,7 +153,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (!epicMap.containsKey(id)) {
             System.out.println("\nПопытка удаления несуществющего эпик: " + id);
         } else {
-            var subtaskIds = new ArrayList<>(getEpicById(id).getSubtaskIdsList());
+            var subtaskIds = new ArrayList<>(epicMap.get(id).getSubtaskIdsList());
             subtaskIds.forEach(this::removeSubtaskById);
             epicMap.remove(id);
         }
@@ -164,6 +173,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
+    @Override
     public List<Subtask> getSubtaskOfEpic(Epic epic) {
         if (!epicMap.containsKey(epic.getId())) {
             System.out.println("\nПроизводится поиск подзадач несуществующего эпика: " + epic);

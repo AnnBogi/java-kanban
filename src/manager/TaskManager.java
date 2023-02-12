@@ -6,12 +6,11 @@ import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 
-
 public interface TaskManager{
 
     List<Task> getAllTasks();
 
-    Task getTaskById(Integer id);
+    Task getTask(Integer id);
 
     void removeAllTasks();
 
@@ -21,10 +20,9 @@ public interface TaskManager{
 
     void updateTask(Task task);
 
-
     List<Subtask> getAllSubtasks();
 
-    Subtask getSubtaskById(Integer id);
+    Subtask getSubtask(Integer id);
 
     void removeAllSubtasks();
 
@@ -36,7 +34,7 @@ public interface TaskManager{
 
     List<Epic> getAllEpics();
 
-    Epic getEpicById(Integer id);
+    Epic getEpic(Integer id);
 
     void removeAllEpics();
 
@@ -47,5 +45,7 @@ public interface TaskManager{
     void updateEpic(Epic epic);
 
     List<Subtask> getSubtaskOfEpic(Epic epic);
+
+    Integer generateId();
 
 }

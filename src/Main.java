@@ -1,16 +1,16 @@
 import java.util.List;
 
+import manager.Managers;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 import tasks.TaskStatus;
 
-import manager.InMemoryTaskManager;
-
 public class Main {
 
     public static void main(String[] args) {
-        var taskManager = new InMemoryTaskManager();
+        var taskManager = Managers.getDefault();
+        var historyTaskManager = Managers.getDefaultHistory();
 
         System.out.println("\nСписок вначале:");
         printList(taskManager.getAllTasks());
@@ -41,12 +41,6 @@ public class Main {
         printList(taskManager.getAllTasks());
         printList(taskManager.getAllEpics());
         printList(taskManager.getAllSubtasks());
-
-        /*
-         * Предоставление задачи по идентификатору.
-         */
-        System.out.println("\nПредоставление простой задачи:");
-        System.out.println(taskManager.getTaskById(2));
 
         /*
          * Удаление простой задачи.
@@ -238,6 +232,35 @@ public class Main {
         printList(taskManager.getAllTasks());
         printList(taskManager.getAllEpics());
         printList(taskManager.getAllSubtasks());
+
+
+        System.out.println("\n\nБлок проверки истории.");
+        taskManager.createTask(task1);
+        taskManager.createTask(task2);
+        taskManager.createTask(task3);
+        taskManager.createEpic(epic6);
+        taskManager.createEpic(epic7);
+        taskManager.createSubtask(subtask8);
+        taskManager.createSubtask(subtask9);
+        taskManager.createSubtask(subtask10);
+
+        taskManager.getTask(2);
+        taskManager.getEpic(7);
+        taskManager.getEpic(7);
+        taskManager.getTask(1);
+        taskManager.getSubtask(9);
+        taskManager.getSubtask(8);
+        taskManager.getEpic(7);
+        taskManager.getSubtask(9);
+        taskManager.getTask(1);
+        taskManager.getSubtask(9);
+        System.out.println("\nПроверка после дпросмотра истории после 10 запросов");
+        printList(historyTaskManager.getHistory());
+        taskManager.getTask(2);
+        taskManager.getTask(3);
+        taskManager.getEpic(6);
+        System.out.println("\nПроверка после дпросмотра истории после 13 запросов");
+        printList(historyTaskManager.getHistory());
     }
 
     private static void printList(List<? extends Task> taskList) {
