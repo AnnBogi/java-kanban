@@ -1,17 +1,22 @@
 package manager;
 
-import tasks.Task;
-
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+
+import tasks.Task;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    private static final List<Task> taskHistory = new ArrayList<>(10);
+    private static final List<Task> taskHistory = new LinkedList<>();
 
     @Override
     public void add(Task task) {
-        if (taskHistory.size() == 10) {
+        /*
+         * Так как список изначально пуст, перед вставкой нового элемента проверяется
+         * размерность списка. И если размерность списка равна 10 (ТЗ4 ст.3 п. "Обновление истории просмотров"),
+         * то происходит удаление первого элемента.
+         */
+        if (taskHistory.size() > 10) {
             taskHistory.remove(0);
         }
         taskHistory.add(task);
