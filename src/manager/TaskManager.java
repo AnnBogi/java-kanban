@@ -8,6 +8,10 @@ import tasks.Task;
 
 public interface TaskManager{
 
+    List<Task> getHistory();
+
+    void remove(int id);
+
     List<Task> getAllTasks();
 
     Task getTask(Integer id);

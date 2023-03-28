@@ -1,17 +1,13 @@
 package manager;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 import tasks.TaskStatus;
+
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * Менеджер управления задачами.
@@ -202,4 +198,12 @@ public class InMemoryTaskManager implements TaskManager {
         epicMap.replace(epic.getId(), epic);
     }
 
+    @Override
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
+    }
+    @Override
+    public void remove(int id) {
+        historyManager.remove(id);
+    }
 }
