@@ -23,9 +23,9 @@ public class Main {
         taskManager.createEpic(epic6);
         taskManager.createEpic(epic7);
 
-        var subtask8 = new Subtask.SubtaskBuilder().withId(taskManager.generateId()).withName("Первая подзадача").withDescription("desc").withEpicId(7).build();
-        var subtask9 = new Subtask.SubtaskBuilder().withId(taskManager.generateId()).withName("Вторая подзадача").withDescription("desc").withEpicId(7).build();
-        var subtask10 = new Subtask.SubtaskBuilder().withId(taskManager.generateId()).withName("Третья подзадача").withDescription("desc").withEpicId(7).build();
+        var subtask8 = new Subtask.SubtaskBuilder().withId(taskManager.generateId()).withName("Первая подзадача").withDescription("desc").withEpicId(3).build();
+        var subtask9 = new Subtask.SubtaskBuilder().withId(taskManager.generateId()).withName("Вторая подзадача").withDescription("desc").withEpicId(3).build();
+        var subtask10 = new Subtask.SubtaskBuilder().withId(taskManager.generateId()).withName("Третья подзадача").withDescription("desc").withEpicId(3).build();
         taskManager.createSubtask(subtask8);
         taskManager.createSubtask(subtask9);
         taskManager.createSubtask(subtask10);
@@ -37,9 +37,9 @@ public class Main {
         taskManager.getEpic(3);
         taskManager.getTask(1);
         taskManager.getEpic(4);
-        taskManager.getSubtask(8);
-        taskManager.getSubtask(8);
-        taskManager.getSubtask(9);
+        taskManager.getSubtask(5);
+        taskManager.getSubtask(5);
+        taskManager.getSubtask(6);
 
         System.out.println("--- Get History ---");
         List<Task> history = taskManager.getHistory();
