@@ -25,6 +25,8 @@ public class Task {
      */
     protected TaskStatus status;
 
+    protected TaskType taskType;
+
 
     public int getId() {
         return id;
@@ -57,12 +59,16 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                '}';
+        return id + "," + taskType + "," + name + "," + description + ",";
+    }
+
+    public Task fromString(String value) {
+        var values = value.split(",");
+        return new TaskBuilder()
+                .withId(Integer.parseInt(values[0]))
+                .withName(values[2])
+                .withDescription(values[3])
+                .build();
     }
 
     public static class TaskBuilder {
@@ -71,6 +77,7 @@ public class Task {
         public TaskBuilder() {
             this.newTask = new Task();
             this.newTask.status = TaskStatus.NEW;
+            this.newTask.taskType = TaskType.TASK;
         }
 
         public TaskBuilder withId(Integer id) {

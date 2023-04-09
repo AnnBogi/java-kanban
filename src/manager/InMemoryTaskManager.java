@@ -23,8 +23,6 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Subtask> subtaskMap = new HashMap<>();
     private final Map<Integer, Epic> epicMap = new HashMap<>();
 
-    private final HistoryManager historyManager = new InMemoryHistoryManager();
-
     @Override
     public Integer generateId() {
         return idCounter.addAndGet(1);
@@ -36,9 +34,9 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task getTask(Integer id) {
-        var task = taskMap.get(id);
-        historyManager.add(task);
+    public Optional<Task> getTask(Integer id) {
+        var task = Optional.ofNullable(taskMap.get(id));
+        Managers.getDefaultHistory().add(task);
         return task;
     }
 
@@ -68,9 +66,18 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Subtask getSubtask(Integer id) {
-        var subtask = subtaskMap.get(id);
-        historyManager.add(subtask);
+    public List<Task> getHistory() {
+        return Managers.getDefaultHistory().getHistory();
+    }
+    @Override
+    public void remove(int id) {
+        Managers.getDefaultHistory().remove(id);
+    }
+
+    @Override
+    public Optional<Subtask> getSubtask(Integer id) {
+        var subtask = Optional.ofNullable(subtaskMap.get(id));
+        Managers.getDefaultHistory().add(subtask);
         return subtask;
     }
 
@@ -132,9 +139,9 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Epic getEpic(Integer id) {
-        var epic = epicMap.get(id);
-        historyManager.add(epic);
+    public Optional<Epic> getEpic(Integer id) {
+        var epic = Optional.ofNullable(epicMap.get(id));
+        Managers.getDefaultHistory().add(epic);
         return epic;
     }
 
@@ -198,12 +205,4 @@ public class InMemoryTaskManager implements TaskManager {
         epicMap.replace(epic.getId(), epic);
     }
 
-    @Override
-    public List<Task> getHistory() {
-        return historyManager.getHistory();
-    }
-    @Override
-    public void remove(int id) {
-        historyManager.remove(id);
-    }
 }

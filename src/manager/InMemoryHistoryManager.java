@@ -1,14 +1,64 @@
 package manager;
 
-import java.util.*;
-
 import tasks.Task;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
     private final Map<Integer, Node> table = new HashMap<>();
     private Node head;
     private Node tail;
+
+    public static String historyToString(HistoryManager manager) {
+        var historyIds = manager.getHistory()
+                .stream()
+                .map(Task::getId)
+                .collect(Collectors.toList());
+        if (!historyIds.isEmpty()) {
+            var result = new StringBuilder();
+            for (int i = 0; i < historyIds.size(); i++) {
+                result.append(historyIds.get(i));
+                if (i < historyIds.size() - 1) {
+                    result.append(",");
+                }
+            }
+            return result.toString();
+        }
+        return "";
+    }
+
+    public static List<Integer> historyFromString(String value) {
+        return Arrays.stream(value.split(","))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void add(Optional<? extends Task> optionalTask) {
+        if (optionalTask.isEmpty()) {
+            return;
+        }
+        var task = optionalTask.get();
+        if (table.containsKey(task.getId())) {
+            removeNode(table.get(task.getId()));
+        }
+        var element = new Node();
+        element.setTask(task);
+        linkLast(element.getTask());
+        table.put(task.getId(), element);
+    }
+
+    @Override
+    public void remove(int id) {
+        removeNode(getNode(id));
+    }
+
+    @Override
+    public List<Task> getHistory() {
+        return getTasks();
+    }
 
     private void linkLast(Task task) {
         Node element = new Node();
@@ -64,25 +114,4 @@ public class InMemoryHistoryManager implements HistoryManager {
         return table.get(id);
     }
 
-    @Override
-    public void add(Task task) {
-        if (table.containsKey(task.getId())) {
-            removeNode(table.get(task.getId()));
-        }
-        Node element = new Node();
-        element.setTask(task);
-        linkLast(element.getTask());
-        table.put(task.getId(), element);
-    }
-
-    @Override
-    public void remove(int id) {
-        removeNode(getNode(id));
-    }
-
-    @Override
-    public List<Task> getHistory() {
-        return getTasks();
-    }
 }
-

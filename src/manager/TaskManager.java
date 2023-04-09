@@ -1,20 +1,17 @@
 package manager;
 
-import java.util.List;
-
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 
-public interface TaskManager{
+import java.util.List;
+import java.util.Optional;
 
-    List<Task> getHistory();
-
-    void remove(int id);
+public interface TaskManager {
 
     List<Task> getAllTasks();
 
-    Task getTask(Integer id);
+    Optional<Task> getTask(Integer id);
 
     void removeAllTasks();
 
@@ -26,7 +23,7 @@ public interface TaskManager{
 
     List<Subtask> getAllSubtasks();
 
-    Subtask getSubtask(Integer id);
+    Optional<Subtask> getSubtask(Integer id);
 
     void removeAllSubtasks();
 
@@ -38,7 +35,7 @@ public interface TaskManager{
 
     List<Epic> getAllEpics();
 
-    Epic getEpic(Integer id);
+    Optional<Epic> getEpic(Integer id);
 
     void removeAllEpics();
 
@@ -51,5 +48,9 @@ public interface TaskManager{
     List<Subtask> getSubtaskOfEpic(Epic epic);
 
     Integer generateId();
+
+    List<Task> getHistory();
+
+    void remove(int id);
 
 }

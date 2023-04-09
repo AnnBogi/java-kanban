@@ -16,13 +16,18 @@ public class Subtask extends Task {
 
     @Override
     public String toString() {
-        return "SubTask{" +
-                "epicId=" + epicId +
-                ", id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                '}';
+        return super.toString() + epicId;
+    }
+
+    @Override
+    public Task fromString(String value) {
+        var values = value.split(",");
+        return new SubtaskBuilder()
+                .withId(Integer.parseInt(values[0]))
+                .withName(values[2])
+                .withDescription(values[3])
+                .withEpicId(Integer.parseInt(values[4]))
+                .build();
     }
 
     public static class SubtaskBuilder {
@@ -31,6 +36,7 @@ public class Subtask extends Task {
         public SubtaskBuilder() {
             this.newSubtask = new Subtask();
             this.newSubtask.status = TaskStatus.NEW;
+            this.newSubtask.taskType = TaskType.SUBTASK;
         }
 
         public SubtaskBuilder withId(Integer id) {

@@ -31,6 +31,7 @@ public class Epic extends Task {
         public EpicBuilder() {
             this.newEpic = new Epic();
             this.newEpic.status = TaskStatus.NEW;
+            this.newEpic.taskType = TaskType.EPIC;
         }
 
         public EpicBuilder withId(Integer id) {
@@ -54,14 +55,24 @@ public class Epic extends Task {
     }
 
     @Override
-    public String toString() {
-        return "Epic{" +
-                "subtaskIdsList=" + subtaskIdsList +
-                ", id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                '}';
+    public Epic fromString(String value) {
+        var values = value.split(",");
+        return new EpicBuilder()
+                .withId(Integer.parseInt(values[0]))
+                .withName(values[2])
+                .withDescription(values[3])
+                .build();
     }
+
+//    @Override
+//    public String toString() {
+//        return "Epic{" +
+//                "subtaskIdsList=" + subtaskIdsList +
+//                ", id=" + id +
+//                ", name='" + name + '\'' +
+//                ", description='" + description + '\'' +
+//                ", status=" + status +
+//                '}';
+//    }
 
 }
