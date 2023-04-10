@@ -21,12 +21,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         save();
     }
 
-//    @Override
-//    public List<Task> getAllTasks() {
-//        var result = super.getAllTasks();
-//        save();
-//        return result;
-//    }
+   @Override
+   public List<Task> getAllTasks() {
+        var result = super.getAllTasks();
+       save();
+       return result;
+    }
 
     @Override
     public Optional<Task> getTask(Integer id) {
@@ -136,7 +136,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return result;
     }
 
-    public void save() throws ManagerSaveException {
+    public void save() {
         var infoOfAllTasks = new ArrayList<Task>();
         infoOfAllTasks.addAll(super.getAllTasks());
         infoOfAllTasks.addAll(super.getAllEpics());
@@ -147,9 +147,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                     historyToString(Managers.getDefaultHistory())
             );
         } catch (IOException e) {
-            throw new ManagerSaveException();
+            throw new ManagerSaveException("Failed to save tasks and history to memory file: " + e.getMessage(), e);
         }
     }
 
-
 }
+
