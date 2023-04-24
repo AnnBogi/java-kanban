@@ -23,23 +23,32 @@ class SubtaskTest {
 
     @Test
     void toStringTest() {
+        // Arrange.
         var expected = "2,SUBTASK,Вторая подзадача,NEW,desc,2023-04-14 07:34:00.002,9,3";
+
+        // Asserts.
         Assertions.assertEquals(expected, subtask.toString());
     }
 
     @Test
     void fromStringTest() {
+        // Arrange.
         var string = "2,SUBTASK,Вторая подзадача,NEW,desc,2023-04-14 07:34:00.002,9,3";
+
+        // Act.
         var result = (Subtask) new Subtask().fromString(string);
 
-        Assertions.assertEquals(2, result.getId());
-        Assertions.assertEquals(TaskType.SUBTASK, result.getTaskType());
-        Assertions.assertEquals("Вторая подзадача", result.getName());
-        Assertions.assertEquals(TaskStatus.NEW, result.getStatus());
-        Assertions.assertEquals("desc", result.getDescription());
-        Assertions.assertEquals(DateUtils.dateFromString("2023-04-14 07:34:00.002"), result.getStartTime());
-        Assertions.assertEquals(9, result.getDuration());
-        Assertions.assertEquals(3, result.getEpicId());
+        // Asserts.
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(2, result.getId()),
+                () -> Assertions.assertEquals(TaskType.SUBTASK, result.getTaskType()),
+                () -> Assertions.assertEquals("Вторая подзадача", result.getName()),
+                () -> Assertions.assertEquals(TaskStatus.NEW, result.getStatus()),
+                () -> Assertions.assertEquals("desc", result.getDescription()),
+                () -> Assertions.assertEquals(DateUtils.dateFromString("2023-04-14 07:34:00.002"), result.getStartTime()),
+                () -> Assertions.assertEquals(9, result.getDuration()),
+                () -> Assertions.assertEquals(3, result.getEpicId())
+        );
     }
 
 }
