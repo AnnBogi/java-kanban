@@ -1,0 +1,109 @@
+###
+#GET http://localhost:8080/tasks/task?id=1
+#Content-Type: application/json
+#
+####
+#GET http://localhost:8080/tasks/subtask
+#Content-Type: application/json
+#
+####
+#GET http://localhost:8080/tasks/epic
+#Content-Type: application/json
+#
+####
+#GET http://localhost:8080/tasks/history
+#Content-Type: application/json
+#
+####
+#GET http://localhost:8080/tasks/
+#Content-Type: application/json
+#
+
+
+###
+GET http://localhost:8080/tasks/
+Content-Type: application/json
+
+
+###
+DELETE http://localhost:8080/tasks/
+Content-Type: application/json
+
+####/tasks/task
+
+###
+GET http://localhost:8080/tasks/task?id=1
+Content-Type: application/json
+
+###
+DELETE http://localhost:8080/tasks/task?id=1
+Content-Type: application/json
+
+###
+POST http://localhost:8080/tasks/task
+Content-Type: application/json
+
+{
+  "id": 124,
+  "name": "name",
+  "description": "description",
+  "status": "NEW",
+  "taskType": "TASK",
+  "duration": 10,
+  "startTime": "May 15, 2022, 12:15:00 AM"
+}
+
+###
+PUT http://localhost:8080/tasks/task
+Content-Type: application/json
+
+{
+  "id": 124,
+  "name": "name-new",
+  "description": "description",
+  "status": "NEW",
+  "taskType": "TASK",
+  "duration": 10,
+  "startTime": "May 15, 2022, 12:15:00 AM"
+}
+
+###
+GET http://localhost:8080/tasks/task?id=124
+Content-Type: application/json
+
+###/tasks/subtask
+//todo:
+#
+#/tasks/subtask
+#GET
+#getAllSubtasks
+#getSubtask
+#
+#DELETE
+#removeSubtaskById
+#removeAllSubtasks
+#
+#POST
+#createSubtask
+#PUT
+#updateSubtask
+
+
+
+
+#/tasks/epics
+#GET
+#getEpic
+#getSubtaskOfEpic (body)
+#getAllEpics
+#
+#POST
+#createEpic
+#
+#PUT
+#updateEpic
+#
+#
+#DELETE
+#removeAllEpics
+#removeEpicById
