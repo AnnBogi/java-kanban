@@ -1,20 +1,16 @@
-package canban.server.controllers;
+package canban.application.client.controllers;
 
+import canban.helpers.HttpMethods;
+import canban.helpers.ParamExtractorUtils;
 import canban.manager.FileBackedTasksManager;
-import canban.server.KVServer;
-import canban.server.ParamExtractorUtils;
 import canban.tasks.Task;
+import canban.utils.IOUtils;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
-
-import static canban.server.KVServer.DELETE;
-import static canban.server.KVServer.GET;
-import static canban.server.KVServer.POST;
-import static canban.server.KVServer.PUT;
 
 public class TaskController {
     private final FileBackedTasksManager fileBackedTasksManager;
@@ -27,22 +23,22 @@ public class TaskController {
         Map<String, String> params = ParamExtractorUtils.queryToMap(h.getRequestURI().getQuery());
         Optional<Integer> id = ParamExtractorUtils.getQueryParamInteger(params, "id");
 
-        if (GET.equals(method)) {
+        if (HttpMethods.GET.name().equals(method)) {
             if (id.isEmpty()) {
                 throw new IllegalArgumentException("id not found");
             }
             return fileBackedTasksManager.getTask(id.get());
-        } else if (DELETE.equals(method)) {
+        } else if (HttpMethods.DELETE.name().equals(method)) {
             if (id.isEmpty()) {
                 throw new IllegalArgumentException("id not found");
             }
             fileBackedTasksManager.removeTaskById(id.get());
             return Optional.empty();
-        } else if (POST.equals(method)) {
+        } else if (HttpMethods.POST.name().equals(method)) {
             final Task task = readTaskFromBody(h);
             fileBackedTasksManager.createTask(task);
             return Optional.empty();
-        } else if (PUT.equals(method)) {
+        } else if (HttpMethods.PUT.name().equals(method)) {
             final Task task = readTaskFromBody(h);
             fileBackedTasksManager.updateTask(task);
             return Optional.empty();
@@ -52,7 +48,7 @@ public class TaskController {
     }
 
     private Task readTaskFromBody(HttpExchange h) throws IOException {
-        final String value = KVServer.readText(h);
+        final String value = IOUtils.readText(h);
         final Gson gson = new Gson();
         return gson.fromJson(value, Task.class);
     }

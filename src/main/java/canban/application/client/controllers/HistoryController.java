@@ -1,10 +1,9 @@
-package canban.server.controllers;
+package canban.application.client.controllers;
 
 import canban.manager.FileBackedTasksManager;
 import canban.tasks.Task;
 import com.sun.net.httpserver.HttpExchange;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +14,7 @@ public class HistoryController {
         this.fileBackedTasksManager = fileBackedTasksManager;
     }
 
-    public Optional<List<Task>> handleHistory(HttpExchange h, String method) throws IOException {
+    public Optional<List<Task>> handleHistory(HttpExchange h, String method) {
         return Optional.of(fileBackedTasksManager.getHistory());
     }
 }

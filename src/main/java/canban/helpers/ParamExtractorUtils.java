@@ -1,4 +1,4 @@
-package canban.server;
+package canban.helpers;
 
 import java.util.HashMap;
 import java.util.Map;

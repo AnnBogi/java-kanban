@@ -1,5 +1,6 @@
-package canban.server.controllers;
+package canban.application.client.controllers;
 
+import canban.helpers.HttpMethods;
 import canban.manager.FileBackedTasksManager;
 import canban.tasks.Task;
 import com.sun.net.httpserver.HttpExchange;
@@ -8,8 +9,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import static canban.server.KVServer.DELETE;
-import static canban.server.KVServer.GET;
 
 public class TasksController {
     private final FileBackedTasksManager fileBackedTasksManager;
@@ -19,10 +18,10 @@ public class TasksController {
     }
 
     public Optional<Object> handleTasks(HttpExchange h, String method) throws IOException {
-        if (GET.equals(method)) {
+        if (HttpMethods.GET.name().equals(method)) {
             final List<Task> allTasks = fileBackedTasksManager.getAllTasks();
             return Optional.of(allTasks);
-        } else if (DELETE.equals(method)) {
+        } else if (HttpMethods.DELETE.name().equals(method)) {
             fileBackedTasksManager.removeAllTasks();
             return Optional.empty();
         } else {

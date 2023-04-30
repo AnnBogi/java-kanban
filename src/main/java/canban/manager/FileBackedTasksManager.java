@@ -1,17 +1,15 @@
 package canban.manager;
 
-import java.io.IOException;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import canban.tasks.Epic;
 import canban.tasks.Subtask;
 import canban.tasks.Task;
-
 import canban.utils.ManagerSaveException;
 import canban.utils.RegistryUtils;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static canban.manager.InMemoryHistoryManager.historyToString;
 

@@ -8,7 +8,8 @@ import canban.utils.DateUtils;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
+
         var taskManager = Managers.getFileBackedTasksManager();
         System.out.println("*** Test History ***");
         System.out.println("--- Create ---");
@@ -92,6 +93,7 @@ public class Main {
 
         var historyAfterRemove = taskManager.getHistory();
         System.out.println(historyAfterRemove);
+
 
         //RegistryUtils.restoreMemory();
 //        var taskManager = Managers.getInMemoryTaskManager();

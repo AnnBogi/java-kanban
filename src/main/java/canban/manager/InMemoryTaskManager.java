@@ -1,25 +1,24 @@
 package canban.manager;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Comparator;
-import java.util.stream.Collectors;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import canban.tasks.Task;
 import canban.tasks.Epic;
 import canban.tasks.Subtask;
-import canban.tasks.TaskType;
+import canban.tasks.Task;
 import canban.tasks.TaskStatus;
-
+import canban.tasks.TaskType;
 import canban.utils.SortedTasksUtil;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * Менеджер управления задачами.
@@ -36,6 +35,20 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Epic> epicMap = new HashMap<>();
 
     private final Set<Task> allTasks = new TreeSet<>(new SortedTasksUtil());
+
+    public void addAllTasks(List<Task> taskList) {
+        for (Task task : taskList) {
+            if (task instanceof Epic) {
+                epicMap.put(task.getId(), (Epic) task);
+            } else if (task instanceof Subtask) {
+                subtaskMap.put(task.getId(), (Subtask) task);
+            } else {
+                taskMap.put(task.getId(), task);
+            }
+
+            allTasks.add(task);
+        }
+    }
 
     @Override
     public Integer generateId() {
@@ -235,10 +248,12 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     protected boolean validateCrossTaskExecution(Task changedTask) {
-        // Сначала производится поиск всех задач с типом ЗАДАЧА и ПОДЗАДАЧА, а затем происходит отбор пересекающихся значений.
+        // Сначала производится поиск всех задач с типом ЗАДАЧА и ПОДЗАДАЧА, а затем происходит отбор пересекающихся
+        // значений.
         var allCrossTasks = allTasks.stream()
                 .filter(task -> task.getTaskType() != TaskType.EPIC)
-                .filter(task -> task.getStartTime().getTime() <= changedTask.getEndTime().getTime() && task.getEndTime().getTime() >= changedTask.getStartTime().getTime())
+                .filter(task -> task.getStartTime().getTime() <= changedTask.getEndTime().getTime() &&
+                        task.getEndTime().getTime() >= changedTask.getStartTime().getTime())
                 .collect(Collectors.toList());
 
         if (allCrossTasks.isEmpty()) {
@@ -247,7 +262,8 @@ public class InMemoryTaskManager implements TaskManager {
 
         // Если же пересечения были найдены - необходимо проверить процесс обновления статуса.
         var filterCrossCurrentTask = allCrossTasks.stream()
-                .filter(task -> Objects.equals(task.getId(), changedTask.getId()) && task.getTaskType().equals(changedTask.getTaskType()))
+                .filter(task -> Objects.equals(task.getId(), changedTask.getId()) &&
+                        task.getTaskType().equals(changedTask.getTaskType()))
                 .findAny();
 
         if (filterCrossCurrentTask.isPresent()) {
