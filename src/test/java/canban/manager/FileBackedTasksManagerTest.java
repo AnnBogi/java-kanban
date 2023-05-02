@@ -1,19 +1,23 @@
 package canban.manager;
 
-import canban.tasks.Epic;
-import canban.tasks.Subtask;
-import canban.tasks.Task;
-import canban.tasks.TaskStatus;
-import canban.utils.DateUtils;
-import canban.utils.ManagerSaveException;
-import canban.utils.RegistryUtils;
+import java.util.Optional;
+
+import java.io.IOException;
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import org.mockito.Mockito;
 
-import java.io.IOException;
-import java.util.Optional;
+import canban.tasks.Epic;
+import canban.tasks.TaskStatus;
+import canban.tasks.Subtask;
+import canban.tasks.Task;
+import canban.utils.ManagerSaveException;
+import canban.utils.RegistryUtils;
+import canban.utils.DateUtils;
 
 class FileBackedTasksManagerTest {
 
@@ -31,6 +35,12 @@ class FileBackedTasksManagerTest {
     void setUp() {
         fileBackedTasksManager = Mockito.spy(new FileBackedTasksManager());
         detectVariable();
+    }
+
+    @AfterEach
+    void tearDown() {
+        fileBackedTasksManager.removeAllTasks();
+        fileBackedTasksManager.removeAllEpics();
     }
 
     // Тестирование задачи.
@@ -118,7 +128,7 @@ class FileBackedTasksManagerTest {
         fileBackedTasksManager.createTask(firstTask);
 
         // Asserts.
-        Mockito.verify(fileBackedTasksManager).createTask(Mockito.any());
+        Mockito.verify((InMemoryTaskManager) fileBackedTasksManager).createTask(Mockito.any());
         Mockito.verify(fileBackedTasksManager, Mockito.times(1)).save();
         Assertions.assertEquals(firstTask, fileBackedTasksManager.getTask(1).get());
     }
@@ -147,8 +157,8 @@ class FileBackedTasksManagerTest {
         var result = fileBackedTasksManager.getAllSubtasks();
 
         // Asserts.
-        Mockito.verify(fileBackedTasksManager).getAllSubtasks();
-        Mockito.verify(fileBackedTasksManager, Mockito.times(4)).save();
+        Mockito.verify((InMemoryTaskManager) fileBackedTasksManager).getAllSubtasks();
+        Mockito.verify(fileBackedTasksManager, Mockito.times(3)).save();
         Assertions.assertEquals(firstSubTask, result.get(0));
     }
 
@@ -158,7 +168,7 @@ class FileBackedTasksManagerTest {
         var result = fileBackedTasksManager.getAllSubtasks();
 
         // Asserts.
-        Mockito.verify(fileBackedTasksManager).getAllSubtasks();
+        Mockito.verify((InMemoryTaskManager) fileBackedTasksManager).getAllSubtasks();
         Mockito.verify(fileBackedTasksManager, Mockito.times(0)).save();
         Assertions.assertTrue(result.isEmpty());
     }
@@ -173,8 +183,8 @@ class FileBackedTasksManagerTest {
         var result = fileBackedTasksManager.getSubtask(2);
 
         // Asserts.
-        Mockito.verify(fileBackedTasksManager).getSubtask(Mockito.anyInt());
-        Mockito.verify(fileBackedTasksManager, Mockito.times(4)).save();
+        Mockito.verify((InMemoryTaskManager) fileBackedTasksManager).getSubtask(Mockito.anyInt());
+        Mockito.verify(fileBackedTasksManager, Mockito.times(3)).save();
         Assertions.assertEquals(Optional.of(firstSubTask), result);
     }
 
@@ -184,7 +194,7 @@ class FileBackedTasksManagerTest {
         var result = fileBackedTasksManager.getSubtask(2);
 
         // Asserts.
-        Mockito.verify(fileBackedTasksManager).getSubtask(Mockito.anyInt());
+        Mockito.verify((InMemoryTaskManager) fileBackedTasksManager).getSubtask(Mockito.anyInt());
         Mockito.verify(fileBackedTasksManager, Mockito.times(0)).save();
         Assertions.assertTrue(result.isEmpty());
     }
@@ -200,8 +210,8 @@ class FileBackedTasksManagerTest {
 
         // Asserts.
         Assertions.assertTrue(fileBackedTasksManager.getAllSubtasks().isEmpty());
-        Mockito.verify(fileBackedTasksManager).removeAllSubtasks();
-        Mockito.verify(fileBackedTasksManager, Mockito.times(5)).save();
+        Mockito.verify((InMemoryTaskManager) fileBackedTasksManager).removeAllSubtasks();
+        Mockito.verify(fileBackedTasksManager, Mockito.times(3)).save();
     }
 
     @Test
@@ -215,8 +225,8 @@ class FileBackedTasksManagerTest {
 
         // Asserts.
         Assertions.assertTrue(fileBackedTasksManager.getAllSubtasks().isEmpty());
-        Mockito.verify(fileBackedTasksManager).removeSubtaskById(Mockito.anyInt());
-        Mockito.verify(fileBackedTasksManager, Mockito.times(5)).save();
+        Mockito.verify((InMemoryTaskManager) fileBackedTasksManager).removeSubtaskById(Mockito.anyInt());
+        Mockito.verify(fileBackedTasksManager, Mockito.times(3)).save();
     }
 
     @Test
@@ -228,7 +238,7 @@ class FileBackedTasksManagerTest {
         fileBackedTasksManager.createSubtask(firstSubTask);
 
         // Asserts.
-        Mockito.verify(fileBackedTasksManager).createSubtask(Mockito.any());
+        Mockito.verify((InMemoryTaskManager) fileBackedTasksManager).createSubtask(Mockito.any());
         Mockito.verify(fileBackedTasksManager, Mockito.times(2)).save();
     }
 
@@ -242,8 +252,8 @@ class FileBackedTasksManagerTest {
         fileBackedTasksManager.updateSubtask(updateFirstSubtask);
 
         // Asserts.
-        Mockito.verify(fileBackedTasksManager).updateSubtask(Mockito.any());
-        Mockito.verify(fileBackedTasksManager, Mockito.times(5)).save();
+        Mockito.verify((InMemoryTaskManager) fileBackedTasksManager).updateSubtask(Mockito.any());
+        Mockito.verify(fileBackedTasksManager, Mockito.times(3)).save();
         Assertions.assertEquals(updateFirstSubtask, fileBackedTasksManager.getSubtask(2).get());
     }
 
@@ -254,7 +264,7 @@ class FileBackedTasksManagerTest {
         fileBackedTasksManager.createEpic(firstEpic);
 
         // Asserts.
-        Mockito.verify(fileBackedTasksManager).createEpic(Mockito.any());
+        Mockito.verify((InMemoryTaskManager) fileBackedTasksManager).createEpic(Mockito.any());
         Mockito.verify(fileBackedTasksManager, Mockito.times(1)).save();
         Assertions.assertEquals(1, fileBackedTasksManager.getAllEpics().size());
     }
@@ -278,7 +288,7 @@ class FileBackedTasksManagerTest {
         var result = fileBackedTasksManager.getEpic(1);
 
         // Asserts.
-        Mockito.verify(fileBackedTasksManager).getEpic(Mockito.any());
+        Mockito.verify((InMemoryTaskManager) fileBackedTasksManager).getEpic(Mockito.any());
         Assertions.assertEquals(firstEpic, result.get());
         Mockito.verify(fileBackedTasksManager, Mockito.times(2)).save();
     }
@@ -293,7 +303,7 @@ class FileBackedTasksManagerTest {
         fileBackedTasksManager.removeAllEpics();
 
         // Asserts.
-        Mockito.verify(fileBackedTasksManager).removeAllEpics();
+        Mockito.verify((InMemoryTaskManager) fileBackedTasksManager).removeAllEpics();
         Assertions.assertTrue(fileBackedTasksManager.getAllEpics().isEmpty());
         Mockito.verify(fileBackedTasksManager, Mockito.times(3)).save();
     }
@@ -309,7 +319,7 @@ class FileBackedTasksManagerTest {
 
         // Asserts.
         Assertions.assertEquals(1, fileBackedTasksManager.getAllEpics().size());
-        Mockito.verify(fileBackedTasksManager).removeEpicById(Mockito.anyInt());
+        Mockito.verify((InMemoryTaskManager) fileBackedTasksManager).removeEpicById(Mockito.anyInt());
         Mockito.verify(fileBackedTasksManager, Mockito.times(4)).save();
     }
 
@@ -321,7 +331,7 @@ class FileBackedTasksManagerTest {
         // Asserts.
         Assertions.assertEquals(1, fileBackedTasksManager.getAllEpics().size());
         Assertions.assertEquals(firstEpic, fileBackedTasksManager.getEpic(1).get());
-        Mockito.verify(fileBackedTasksManager).createEpic(Mockito.any());
+        Mockito.verify((InMemoryTaskManager) fileBackedTasksManager).createEpic(Mockito.any());
         Mockito.verify(fileBackedTasksManager, Mockito.times(3)).save();
     }
 
@@ -335,8 +345,8 @@ class FileBackedTasksManagerTest {
 
         // Asserts.
         Assertions.assertEquals(TaskStatus.NEW, fileBackedTasksManager.getEpic(1).get().getStatus());
-        Mockito.verify(fileBackedTasksManager).updateEpic(Mockito.any());
-        Mockito.verify(fileBackedTasksManager, Mockito.times(4)).save();
+        Mockito.verify((InMemoryTaskManager) fileBackedTasksManager).updateEpic(Mockito.any());
+        Mockito.verify(fileBackedTasksManager, Mockito.times(3)).save();
     }
 
     @Test
@@ -350,13 +360,13 @@ class FileBackedTasksManagerTest {
 
         // Asserts.
         Assertions.assertEquals(firstSubTask, result.get(0));
-        Mockito.verify(fileBackedTasksManager).getAllSubtasks();
-        Mockito.verify(fileBackedTasksManager, Mockito.times(4)).save();
+        Mockito.verify((InMemoryTaskManager) fileBackedTasksManager).getAllSubtasks();
+        Mockito.verify(fileBackedTasksManager, Mockito.times(3)).save();
     }
 
     @Test
     void saveTest() {
-        try (var mock = Mockito.mockStatic(RegistryUtils.class)){
+        try (var mock = Mockito.mockStatic(RegistryUtils.class)) {
             // Act.
             fileBackedTasksManager.save();
 
@@ -374,7 +384,7 @@ class FileBackedTasksManagerTest {
             }).thenThrow(IOException.class);
 
             // Act.
-            var result  = Assertions.assertThrows(ManagerSaveException.class, () -> fileBackedTasksManager.save()) ;
+            var result = Assertions.assertThrows(ManagerSaveException.class, () -> fileBackedTasksManager.save());
 
             // Asserts.
             Assertions.assertTrue(result.getMessage().startsWith("Failed to save tasks and history to memory file: "));

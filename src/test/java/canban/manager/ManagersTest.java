@@ -6,23 +6,30 @@ import org.junit.jupiter.api.Test;
 class ManagersTest {
 
     @Test
-    void shouldReturnInMemoryTaskManagerInstanceWhenCalled() {
+    void getInMemoryTaskManagerTest() {
+        // Act.
         var result = Managers.getInMemoryTaskManager();
+
+        // Asserts.
         Assertions.assertTrue(result instanceof InMemoryTaskManager);
     }
 
     @Test
-    void shouldReturnInMemoryHistoryManagerInstanceWhenCalled() {
+    void getDefaultHistoryTest() {
+        // Act.
         var result = Managers.getDefaultHistory();
+
+        // Asserts.
         Assertions.assertTrue(result instanceof InMemoryHistoryManager);
     }
 
     @Test
-    void shouldReturnFileBackedTasksManagerInstanceWhenCalled() {
+    void getFileBackedTasksManagerTest() {
+        // Act.
         var result = Managers.getFileBackedTasksManager();
+
+        // Asserts.
         Assertions.assertTrue(result instanceof FileBackedTasksManager);
     }
 
 }
-
-

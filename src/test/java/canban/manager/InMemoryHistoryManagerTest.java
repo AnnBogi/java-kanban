@@ -1,15 +1,17 @@
 package canban.manager;
 
-import canban.tasks.Task;
-import canban.utils.DateUtils;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import org.mockito.Mockito;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import canban.tasks.Task;
+import canban.utils.DateUtils;
 
 class InMemoryHistoryManagerTest {
 
@@ -25,7 +27,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void addHistoryTest() throws NoSuchFieldException, IllegalAccessException {
+    void addHistoryTest() throws NoSuchFieldException {
         // Arrange.
         var tableField = InMemoryHistoryManager.class.getDeclaredField("table");
         tableField.setAccessible(true);
@@ -47,7 +49,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void addHistoryExistedTest() throws NoSuchFieldException, IllegalAccessException {
+    void addHistoryExistedTest() throws NoSuchFieldException {
         // Arrange.
         var tableField = InMemoryHistoryManager.class.getDeclaredField("table");
         tableField.setAccessible(true);
@@ -66,7 +68,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void addHistorySecondaryTest() throws NoSuchFieldException, IllegalAccessException {
+    void addHistorySecondaryTest() throws NoSuchFieldException {
         // Arrange.
         var tableField = InMemoryHistoryManager.class.getDeclaredField("table");
         tableField.setAccessible(true);
@@ -88,7 +90,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void addHistoryThirdTest() throws NoSuchFieldException, IllegalAccessException {
+    void addHistoryThirdTest() throws NoSuchFieldException {
         // Arrange.
         var tableField = InMemoryHistoryManager.class.getDeclaredField("table");
         tableField.setAccessible(true);
@@ -212,7 +214,7 @@ class InMemoryHistoryManagerTest {
     @Test
     void historyToStringEmptyTest() {
         // Arrange.
-        var historyManager = Managers.getDefaultHistory();
+        var historyManager = new InMemoryHistoryManager();
 
         // Act.
         var result = InMemoryHistoryManager.historyToString(historyManager);

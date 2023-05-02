@@ -1,23 +1,15 @@
 package canban.utils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.List;
-import java.util.Properties;
-import java.util.Optional;
-
 import canban.manager.InMemoryHistoryManager;
 import canban.manager.Managers;
 import canban.tasks.Epic;
 import canban.tasks.Subtask;
 import canban.tasks.Task;
 import canban.tasks.TaskType;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 public final class RegistryUtils {
 
@@ -47,7 +39,8 @@ public final class RegistryUtils {
     }
 
     public static void writeToMemoryFile(List<Task> taskList, String history) throws IOException {
-        try (var writer = new PrintWriter(new FileOutputStream(loadRegistryProperty(), false))) {
+        try (var outputStreamWriter = new OutputStreamWriter(new FileOutputStream(loadRegistryProperty()), StandardCharsets.UTF_8);
+             var writer = new PrintWriter(outputStreamWriter, false)) {
             var sb = "id,type,name,status,description,epic\n" +
                     getTaskInfo(taskList) +
                     history;

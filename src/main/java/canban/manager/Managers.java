@@ -1,6 +1,11 @@
 package canban.manager;
 
-import canban.manager.http.HttpTaskManager;
+import canban.adapter.LocalDateTimeAdapter;
+import canban.server.HttpTaskManager;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.time.LocalDateTime;
 
 /**
  * Утилитарный класс управления.
@@ -10,10 +15,11 @@ public final class Managers {
     private static final InMemoryTaskManager IN_MEMORY_TASK_MANAGER = new InMemoryTaskManager();
     private static final InMemoryHistoryManager HISTORY_MANAGER = new InMemoryHistoryManager();
     private static final FileBackedTasksManager FILE_BACKED_TASKS_MANAGER = new FileBackedTasksManager();
-    public static final String HTTP_LOCALHOST_8080 = "http://localhost:9090";
-    public static final String SOME_RANDOM_KEY = "some-random-key";
-    private static final HttpTaskManager HTTP_TASK_MANAGER = new HttpTaskManager(HTTP_LOCALHOST_8080, SOME_RANDOM_KEY);
-    //  я не знаю как для статической переменной вызвать конструктор
+
+    private static final HttpTaskManager HTTP_TASK_MANAGER = new HttpTaskManager();
+
+
+    private Managers() {}
 
     public static InMemoryTaskManager getInMemoryTaskManager() {
         return IN_MEMORY_TASK_MANAGER;
@@ -26,11 +32,16 @@ public final class Managers {
     public static FileBackedTasksManager getFileBackedTasksManager() {
         return FILE_BACKED_TASKS_MANAGER;
     }
+
     public static HttpTaskManager getHttpTaskManager() {
         return HTTP_TASK_MANAGER;
     }
 
-    private Managers() {
+    public static Gson getGson() {
+        var gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter());
+
+        return gsonBuilder.create();
     }
 
 }

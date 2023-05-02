@@ -10,10 +10,10 @@ class SortedTasksUtilTest {
 
     private SortedTasksUtil sortedTasksUtil;
 
-    private Task taskEmpty1;
-    private Task taskEmpty2;
-    private Task task1;
-    private Task task2;
+    private Task firstEmptyTask;
+    private Task secondEmptyTask;
+    private Task firstTask;
+    private Task secondTask;
 
     @BeforeEach
     void setUp() {
@@ -23,52 +23,52 @@ class SortedTasksUtilTest {
 
     @Test
     void compareFirstEmptyTest() {
-        Assertions.assertEquals(1, sortedTasksUtil.compare(taskEmpty1, task2));
+        Assertions.assertEquals(1, sortedTasksUtil.compare(firstEmptyTask, secondTask));
     }
 
     @Test
     void compareSecondEmptyTest() {
-        Assertions.assertEquals(-1, sortedTasksUtil.compare(task1, taskEmpty2));
+        Assertions.assertEquals(-1, sortedTasksUtil.compare(firstTask, secondEmptyTask));
     }
 
     @Test
     void compareFirstMoreSecondTest() {
-        Assertions.assertEquals(-1, sortedTasksUtil.compare(taskEmpty1, taskEmpty2));
+        Assertions.assertEquals(-1, sortedTasksUtil.compare(firstEmptyTask, secondEmptyTask));
     }
 
     @Test
     void compareSecondMoreFirstTest() {
-        Assertions.assertEquals(1, sortedTasksUtil.compare(taskEmpty2, taskEmpty1));
+        Assertions.assertEquals(1, sortedTasksUtil.compare(secondEmptyTask, firstEmptyTask));
     }
 
     @Test
     void compareSecondEqualFirstTest() {
-        Assertions.assertEquals(0, sortedTasksUtil.compare(taskEmpty2, taskEmpty2));
+        Assertions.assertEquals(0, sortedTasksUtil.compare(secondEmptyTask, secondEmptyTask));
     }
 
     @Test
     void compareFirstStartAfterSecondTest() {
-        Assertions.assertEquals(1, sortedTasksUtil.compare(task2, task1));
+        Assertions.assertEquals(1, sortedTasksUtil.compare(secondTask, firstTask));
     }
 
     @Test
     void compareSecondStartAfterFirstTest() {
-        Assertions.assertEquals(-1, sortedTasksUtil.compare(task1, task2));
+        Assertions.assertEquals(-1, sortedTasksUtil.compare(firstTask, secondTask));
     }
 
     @Test
     void compareSecondStartEqualFirstTest() {
-        Assertions.assertEquals(0, sortedTasksUtil.compare(task1, task1));
+        Assertions.assertEquals(0, sortedTasksUtil.compare(firstTask, firstTask));
     }
 
     private void detectVariable() {
-        taskEmpty1 = new Task.TaskBuilder().withId(1).build();
-        taskEmpty2 = new Task.TaskBuilder().withId(2).build();
+        firstEmptyTask = new Task.TaskBuilder().withId(1).build();
+        secondEmptyTask = new Task.TaskBuilder().withId(2).build();
 
-        task1 = new Task.TaskBuilder().withId(1)
+        firstTask = new Task.TaskBuilder().withId(1)
                 .withStartDate(DateUtils.dateFromString("2023-04-14 07:10:00.001"))
                 .build();
-        task2 = new Task.TaskBuilder().withId(2)
+        secondTask = new Task.TaskBuilder().withId(2)
                 .withStartDate(DateUtils.dateFromString("2023-04-14 08:10:00.001"))
                 .build();
     }

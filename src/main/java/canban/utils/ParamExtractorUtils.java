@@ -1,17 +1,20 @@
-package canban.helpers;
+package canban.utils;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class ParamExtractorUtils {
+public final class ParamExtractorUtils {
+
+    private ParamExtractorUtils() {}
+
     public static Map<String, String> queryToMap(String query) {
         if (query == null) {
             return Map.of();
         }
-        Map<String, String> result = new HashMap<>();
-        for (String param : query.split("&")) {
-            String[] entry = param.split("=");
+        var result = new HashMap<String, String>();
+        for (var param : query.split("&")) {
+            var entry = param.split("=");
             if (entry.length > 1) {
                 result.put(entry[0], entry[1]);
             } else {
@@ -22,7 +25,7 @@ public class ParamExtractorUtils {
     }
 
     public static Optional<Integer> getQueryParamInteger(Map<String, String> params, String key) {
-        final String idRaw = params.get(key);
+        var idRaw = params.get(key);
         if (idRaw == null || idRaw.isBlank()) {
             return Optional.empty();
         }
@@ -33,4 +36,5 @@ public class ParamExtractorUtils {
             return Optional.empty();
         }
     }
+
 }

@@ -23,11 +23,11 @@ public class RegistryUtilsTest {
 
     private static final String TEST_RESOURCES = "src/test/resources/";
 
-    private Task task1;
-    private Task task2;
-    private Epic epic1;
-    private Epic epic2;
-    private Subtask subtask1;
+    private Task firstTask;
+    private Task secondTask;
+    private Epic firstEpic;
+    private Epic secondEpic;
+    private Subtask subtaskOfFirstEpic;
 
     @BeforeEach
     void startUp() {
@@ -37,14 +37,17 @@ public class RegistryUtilsTest {
     @Test
     void restoreTaskMemoryTest() {
         try (var registryUtilsMockedStatic = Mockito.mockStatic(RegistryUtils.class);
+             // Arrange.
              var managersMockedStatic = Mockito.mockStatic(Managers.class)) {
             registryUtilsMockedStatic.when(RegistryUtils::loadRegistryProperty).thenReturn(TEST_RESOURCES + "restore_task_memory_test/memory.csv");
             registryUtilsMockedStatic.when(RegistryUtils::restoreMemory).thenCallRealMethod();
             var inMemoryTaskManagerMock = Mockito.mock(InMemoryTaskManager.class);
             managersMockedStatic.when(Managers::getInMemoryTaskManager).thenReturn(inMemoryTaskManagerMock);
 
+            // Act.
             RegistryUtils.restoreMemory();
 
+            // Asserts.
             managersMockedStatic.verify(Managers::getInMemoryTaskManager, Mockito.times(5));
             Mockito.verify(inMemoryTaskManagerMock, Mockito.times(2)).createTask(Mockito.any());
             Mockito.verify(inMemoryTaskManagerMock, Mockito.times(2)).createEpic(Mockito.any());
@@ -56,13 +59,16 @@ public class RegistryUtilsTest {
     void restoreEmptyTaskMemoryTest() {
         try (var registryUtilsMockedStatic = Mockito.mockStatic(RegistryUtils.class);
              var managersMockedStatic = Mockito.mockStatic(Managers.class)) {
+            // Arrange.
             registryUtilsMockedStatic.when(RegistryUtils::loadRegistryProperty).thenReturn(TEST_RESOURCES + "restore_empty_task_memory_test/memory.csv");
             registryUtilsMockedStatic.when(RegistryUtils::restoreMemory).thenCallRealMethod();
             var inMemoryTaskManagerMock = Mockito.mock(InMemoryTaskManager.class);
             managersMockedStatic.when(Managers::getInMemoryTaskManager).thenReturn(inMemoryTaskManagerMock);
 
+            // Act.
             RegistryUtils.restoreMemory();
 
+            // Asserts.
             managersMockedStatic.verify(Managers::getInMemoryTaskManager, Mockito.times(0));
             Mockito.verify(inMemoryTaskManagerMock, Mockito.times(0)).createTask(Mockito.any());
             Mockito.verify(inMemoryTaskManagerMock, Mockito.times(0)).createEpic(Mockito.any());
@@ -73,13 +79,17 @@ public class RegistryUtilsTest {
     @Test
     void writeToMemoryFileTest() {
         try (var mock = Mockito.mockStatic(RegistryUtils.class)) {
+            // Arrange.
             var registriesPath = TEST_RESOURCES + "write_to_memory_file_test/";
             var resultRegistryPath = registriesPath + "memory.csv";
             mock.when(RegistryUtils::loadRegistryProperty).thenReturn(resultRegistryPath);
             mock.when(() -> RegistryUtils.getTaskInfo(Mockito.anyList())).thenCallRealMethod();
             mock.when(() -> RegistryUtils.writeToMemoryFile(Mockito.anyList(), Mockito.anyString())).thenCallRealMethod();
 
-            RegistryUtils.writeToMemoryFile(List.of(task1, task2, epic1, subtask1, epic2), "1,9,1,4");
+            // Act.
+            RegistryUtils.writeToMemoryFile(List.of(firstTask, secondTask, firstEpic, subtaskOfFirstEpic, secondEpic), "1,9,1,4");
+
+            // Asserts.
             Assertions.assertEquals(-1, filesCompare(registriesPath + "memoryRef.csv", resultRegistryPath));
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -89,13 +99,17 @@ public class RegistryUtilsTest {
     @Test
     void writeEmptyToMemoryFileTest() {
         try (var mock = Mockito.mockStatic(RegistryUtils.class)) {
+            // Arrange.
             var registriesPath = TEST_RESOURCES + "write_empty_to_memory_file_test/";
             var resultRegistryPath = registriesPath + "memory.csv";
             mock.when(RegistryUtils::loadRegistryProperty).thenReturn(resultRegistryPath);
             mock.when(() -> RegistryUtils.getTaskInfo(Mockito.anyList())).thenCallRealMethod();
             mock.when(() -> RegistryUtils.writeToMemoryFile(Mockito.anyList(), Mockito.anyString())).thenCallRealMethod();
 
+            // Act.
             RegistryUtils.writeToMemoryFile(Collections.emptyList(), "");
+
+            // Asserts.
             Assertions.assertEquals(-1, filesCompare(registriesPath + "memoryRef.csv", resultRegistryPath));
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -103,21 +117,21 @@ public class RegistryUtilsTest {
     }
 
     private void detectVariable() {
-        task1 = new Task.TaskBuilder().withId(1)
+        firstTask = new Task.TaskBuilder().withId(1)
                 .withName("Простая задача 1 обновлённая")
                 .withDescription("1")
                 .withStatus(TaskStatus.IN_PROGRESS)
                 .withStartDate(DateUtils.dateFromString("2023-04-14 07:10:00.001"))
                 .withDuration(4)
                 .build();
-        task2 = new Task.TaskBuilder().withId(2)
+        secondTask = new Task.TaskBuilder().withId(2)
                 .withName("Простая задача 2 обновлённая")
                 .withDescription("2")
                 .withStatus(TaskStatus.IN_PROGRESS)
                 .withStartDate(DateUtils.dateFromString("2023-04-14 07:14:00.002"))
                 .withDuration(5)
                 .build();
-        epic1 = new Epic.EpicBuilder().withId(4)
+        firstEpic = new Epic.EpicBuilder().withId(4)
                 .withName("Первый пустой эпик")
                 .withStatus(TaskStatus.IN_PROGRESS)
                 .withDescription("Сюда ничего не добавится")
@@ -126,11 +140,11 @@ public class RegistryUtilsTest {
                 .withSubTasksIds(List.of(8))
                 .withEndDate(DateUtils.dateFromString("2023-04-14 07:54:00.002"))
                 .build();
-        epic2 = new Epic.EpicBuilder().withId(5)
+        secondEpic = new Epic.EpicBuilder().withId(5)
                 .withName("Второй эпик")
                 .withDescription("С задачами")
                 .build();
-        subtask1 = new Subtask.SubtaskBuilder().withId(8)
+        subtaskOfFirstEpic = new Subtask.SubtaskBuilder().withId(8)
                 .withName("Третья подзадача")
                 .withDescription("desc")
                 .withStatus(TaskStatus.IN_PROGRESS)

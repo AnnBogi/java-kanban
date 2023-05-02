@@ -1,15 +1,47 @@
 package canban;
 
 import canban.manager.Managers;
+import canban.server.HttpTaskServer;
+import canban.server.KVServer;
 import canban.tasks.Epic;
 import canban.tasks.Subtask;
 import canban.tasks.Task;
 import canban.utils.DateUtils;
 
+import java.io.IOException;
+import java.util.List;
+
 public class Main {
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws IOException {
+       // RegistryUtils.restoreMemory();
 
+        new HttpTaskServer().start();
+        new KVServer().start();
+        readTaskFromBody();
+        createFileMemory();
+    }
+
+    private static Task readTaskFromBody() throws IOException {
+        var gson = Managers.getGson();
+        var task1 = new Task.TaskBuilder().withId(1)
+                .withName("Простая задача 1")
+                .withDescription("1")
+                .withStartDate(DateUtils.dateFromString("2023-04-14 07:10:00.001"))
+                .withDuration(4)
+                .build();
+        var task2 = new Task.TaskBuilder().withId(2)
+                .withName("Простая задача 2")
+                .withDescription("2")
+                .withStartDate(DateUtils.dateFromString("2023-04-14 07:14:00.002"))
+                .withDuration(5)
+                .build();
+        var list = List.of(task1, task2);
+        gson.toJson(list);
+        return gson.fromJson("{\"id\":1,\"name\":\"Простая задача 1 обновлённая\",\"description\":\"1\",\"status\":\"IN_PROGRESS\",\"taskType\":\"TASK\",\"duration\":4,\"startTime\":\"Apr 14, 2023, 7:10:00 AM\"}", Task.class);
+    }
+
+    private static void createFileMemory() {
         var taskManager = Managers.getFileBackedTasksManager();
         System.out.println("*** Test History ***");
         System.out.println("--- Create ---");
@@ -73,8 +105,8 @@ public class Main {
 
         System.out.println("--- Get By Id ---");
         taskManager.getTask(1);
-        taskManager.getEpic(3);
-        taskManager.getEpic(3);
+        taskManager.getEpic(5);
+        taskManager.getEpic(5);
         taskManager.getEpic(3);
         taskManager.getTask(1);
         taskManager.getEpic(4);
@@ -93,54 +125,7 @@ public class Main {
 
         var historyAfterRemove = taskManager.getHistory();
         System.out.println(historyAfterRemove);
-
-
-        //RegistryUtils.restoreMemory();
-//        var taskManager = Managers.getInMemoryTaskManager();
-        //
-//        taskManager.getAllTasks().forEach(e ->
-//            System.out.println(e.toString())
-//        );
-//       taskManager.getAllEpics().forEach(e ->
-//               System.out.println(e.toString())
-//       );
-//        taskManager.getAllSubtasks().forEach(e ->
-//                System.out.println(e.toString())
-//        );
-
-//        System.out.println("Hist");
-//        Managers.getDefaultHistory().getHistory().forEach(e -> System.out.println(e.toString()));
-
-//        var subtask7_1 = new Subtask.SubtaskBuilder().withId(subtask7.getId())
-//                .withName("Третья подзадача")
-//                .withDescription("desc")
-//                .withStatus(TaskStatus.IN_PROGRESS)
-//                .withEpicId(4)
-//                .withStartDate(subtask7.getStartTime())
-//                .withDuration(10)
-//                .build();
-//        taskManager.updateSubtask(subtask7_1);
-//
-//        var task1_1 = new Task.TaskBuilder().withId(task1.getId())
-//                .withName("Простая задача 1 обновлённая")
-//                .withDescription("1")
-//                .withStatus(TaskStatus.IN_PROGRESS)
-//                .withStartDate(task1.getStartTime())
-//                .withDuration(4)
-//                .build();
-//        taskManager.updateTask(task1_1);
-//
-//        var task2_1 = new Task.TaskBuilder().withId(task2.getId())
-//                .withName("Простая задача 2 обновлённая")
-//                .withDescription("2")
-//                .withStatus(TaskStatus.IN_PROGRESS)
-//                .withStartDate(task2.getStartTime())
-//                .withDuration(5)
-//                .build();
-//        taskManager.updateTask(task2_1);
-//
-//        System.out.println("Вывод отсортированных по дате и id значений"); // даты можно выставить другие в объектах выше.
-//        taskManager.getPrioritizedTasks().forEach(e -> System.out.println(e.toString()));
     }
+
 
 }

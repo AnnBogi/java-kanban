@@ -1,16 +1,17 @@
 package canban.tasks;
 
+import canban.utils.DateUtils;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import lombok.Data;
-
-import canban.utils.DateUtils;
-
 /**
  * Сущность эпик.
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class Epic extends Task {
 
@@ -22,7 +23,9 @@ public class Epic extends Task {
     private Date endTime;
 
     public void addSubTaskId(Integer subtaskId) {
-        subtaskIdsList.add(subtaskId);
+        if (!this.subtaskIdsList.contains(subtaskId)) {
+            subtaskIdsList.add(subtaskId);
+        }
     }
 
     public void removeSubtaskId(Integer subtaskId) {
